@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Exam Performance Indicator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Google Fonts for a modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CDN for easy styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #78ffd6, #a8ff78);
+            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .card {
+            max-width: 500px;
+            margin: 50px auto;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, .37);
+            background: rgba(255,255,255,0.85);
+            padding: 30px 40px 40px 40px;
+        }
+        h1 {
+            font-weight: 700;
+            text-align: center;
+            color: #009688;
+            margin-bottom: 18px;
+        }
+        legend {
+            font-size: 1.2rem;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #009688;
+        }
+        .form-control, .btn-primary {
+            border-radius: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #56ab2f 0%, #a8e063 100%);
+            border: none;
+            font-weight: 600;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 8px rgba(56,171,47,0.1);
+            transition: background 0.3s;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #a8e063 0%, #56ab2f 100%);
+        }
+        h2 {
+            text-align: center;
+            margin-top: 35px;
+            font-weight: 600;
+            color: #333;
+            background: #e0f7fa;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 8px rgba(0,150,136,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Student Exam Performance Indicator</h1>
+        <form action="{{ url_for('predict_datapoint')}}" method="post">
+            <legend>Student Exam Performance Prediction</legend>
+            <div class="form-group">
+                <label class="form-label">Gender</label>
+                <select class="form-control" name="gender" required>
+                    <option selected disabled value="">Select your Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Race or Ethnicity</label>
+                <select class="form-control" name="ethnicity" required>
+                    <option selected disabled value="">Select Ethnicity</option>
+                    <option value="group A">Group A</option>
+                    <option value="group B">Group B</option>
+                    <option value="group C">Group C</option>
+                    <option value="group D">Group D</option>
+                    <option value="group E">Group E</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Parental Level of Education</label>
+                <select class="form-control" name="parental_level_of_education" required>
+                    <option selected disabled value="">Select Parent Education</option>
+                    <option value="associate's degree">Associate's degree</option>
+                    <option value="bachelor's degree">Bachelor's degree</option>
+                    <option value="high school">High school</option>
+                    <option value="master's degree">Master's degree</option>
+                    <option value="some college">Some college</option>
+                    <option value="some high school">Some high school</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Lunch Type</label>
+                <select class="form-control" name="lunch" required>
+                    <option selected disabled value="">Select Lunch Type</option>
+                    <option value="free/reduced">Free/reduced</option>
+                    <option value="standard">Standard</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Test Preparation Course</label>
+                <select class="form-control" name="test_preparation_course" required>
+                    <option selected disabled value="">Select Test Course</option>
+                    <option value="none">None</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Writing Score out of 100</label>
+                <input class="form-control" type="number" name="writing_score"
+                    placeholder="Enter your Writing score" min="0" max="100" required />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Reading Score out of 100</label>
+                <input class="form-control" type="number" name="reading_score"
+                    placeholder="Enter your Reading  Score" min="0" max="100" required />
+            </div>
+            <button class="btn btn-primary btn-block mt-4" type="submit">Predict your Maths Score</button>
+        </form>
+        <h2>
+            The prediction is {{results}}
+        </h2>
+    </div>
+</body>
+</html>
