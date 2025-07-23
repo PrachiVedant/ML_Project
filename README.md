@@ -1,133 +1,87 @@
-# END TO END MACHINE LEARNING PROJECT
 
 
-Welcome to the ML_Project repository! This project demonstrates a comprehensive machine learning workflow, covering data preparation, exploration, modeling, evaluation, and deployment. Follow the detailed steps below to reproduce or understand the project.
+# END TO END MACHINE LEARNING PROJECT WITH AWS EC2 DEPLOYMENT
 
----
-
-## 1. Project Setup
-
-### Prerequisites
-- Python 3.7 or above
-- (Recommended) Create and activate a virtual environment:
+## Setup & Installation
+- Python 3.7+  
+- Create and activate virtual environment:  
   ```bash
   python -m venv venv
-  source venv/bin/activate    # On Windows: venv\Scripts\activate
+  source venv/bin/activate  # Windows: venv\Scripts\activate
   ```
-- Install required packages:
+- Install dependencies:  
   ```bash
   pip install -r requirements.txt
   ```
-- Additional dependencies may be listed in individual script headers or notebooks.
 
----
-
-## 2. Directory Structure
-
+## Directory Structure
 ```
 ML_Project/
-├── data/              # Raw and processed datasets
-├── notebooks/         # Jupyter notebooks for analysis and modeling
-├── scripts/           # Python scripts for various ML pipeline stages
-├── results/           # Model outputs, predictions, plots
-├── report.md          # Project summary and findings
-├── requirements.txt   # Python dependencies
-├── README.md          # Project documentation
-└── LICENSE            # License information
+├── data/          
+├── notebooks/     
+├── scripts/       
+├── results/       
+├── application.py   # Flask app for model serving
+├── model.pkl        # Serialized model
+├── requirements.txt
+├── Dockerfile       # (Optional) Container build
+└── README.md
 ```
 
----
+## ML Workflow
+- Data prep and cleaning  
+- EDA and feature engineering  
+- Model training and evaluation  
+- Serialize model (model.pkl)  
+- Flask API (`application.py`) for serving predictions
 
-## 3. Data Preparation
+## AWS EC2 Deployment Steps
+1. Launch EC2 instance (Amazon Linux or Ubuntu) with SSH and HTTP ports open.  
+2. SSH into instance:  
+   ```bash
+   ssh -i key.pem ec2-user@
+   ```
+3. Install Python3, pip, and create a virtual environment.  
+4. Upload code and model files to EC2 (using `scp` or SFTP).  
+5. Install dependencies:  
+   ```bash
+   pip install -r requirements.txt
+   ```
+6. Run Flask app:  
+   ```bash
+   python3 application.py
+   ```
+7. Access at `http://:5000`
 
-- Place your dataset in the `data/` folder. Supported formats: CSV, Excel, etc.
-- If needed, use the provided scripts in `scripts/data_preprocessing.py` or notebook to:
-  - Load the data
-  - Clean data (remove duplicates, fix data types)
-  - Handle missing values (imputation or removal)
-  - Encode categorical variables (LabelEncoding, OneHotEncoding)
-  - Normalize or scale features (StandardScaler, MinMaxScaler)
-- Save processed data as `data/processed_data.csv`.
+## Tips
+- Ensure Flask runs on `host='0.0.0.0'` to be publicly accessible.  
+- Use Elastic IP to keep a fixed EC2 IP.  
+- Secure your instance with proper security group rules.
 
----
+## Sample Flask app (`application.py`)
+```python
+from flask import Flask, request, jsonify
+import pickle
+import numpy as np
 
-## 4. Exploratory Data Analysis (EDA)
+app = Flask(__name__)
+model = pickle.load(open('model.pkl', 'rb'))
 
-- Use `notebooks/eda.ipynb` or `scripts/eda.py` for:
-  - Summarizing features (mean, std, unique values)
-  - Checking target variable distribution
-  - Visualizing data with histograms, boxplots, scatterplots
-  - Identifying correlations and feature relationships
-  - Spotting outliers/anomalies
+@app.route('/predict', methods=['POST'])
+def predict():
+    data = request.get_json(force=True)
+    features = np.array(data['features']).reshape(1, -1)
+    prediction = model.predict(features)
+    return jsonify({'prediction': prediction.tolist()})
 
----
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+```
 
-## 5. Feature Engineering
+## Contributing
+Fork, branch, commit, push, and create PR.
 
-- Transform and create new features as needed.
-- Select relevant features using statistical tests or model-based importance (e.g., SelectKBest, feature_importances_).
-- Document feature choices in the notebook or `report.md`.
+## License
+MIT License. See LICENSE.
 
----
-
-## 6. Model Selection & Training
-
-- Try multiple algorithms (e.g., Logistic Regression, Decision Tree, Random Forest, SVM, XGBoost).
-- Split your data into training and test sets (e.g., 80/20 split) using `train_test_split`.
-- Train models with `scripts/train.py` or corresponding notebook.
-- Tune hyperparameters with GridSearchCV or RandomizedSearchCV.
-
----
-
-## 7. Model Evaluation
-
-- Evaluate models using metrics:
-  - Classification: accuracy, precision, recall, F1-score, ROC-AUC
-  - Regression: RMSE, MAE, R²
-- Use cross-validation for robust assessment.
-- Visualize results: confusion matrix, ROC curve, feature importance, learning curves.
-- Save evaluation reports in `results/`.
-
----
-
-## 8. Model Deployment (Optional)
-
-- Save trained models with `joblib` or `pickle` in `results/`.
-- Use `scripts/predict.py` to make predictions on new/unseen data.
-- For real-world deployment, consider wrapping model inference in a REST API (e.g., using Flask).
-
----
-
-## 9. Reporting
-
-- Summarize process, findings, and next steps in `report.md`.
-- Include:
-  - Data and feature summary
-  - Model choices and rationale
-  - Performance metrics and plots
-  - Limitations and possible improvements
-
----
-
-## 10. Contribution Guidelines
-
-- Fork the repository and create your branch (`git checkout -b feature-branch`)
-- Commit your changes (`git commit -am 'Add new feature'`)
-- Push to the branch (`git push origin feature-branch`)
-- Open a pull request
-
----
-
-## 11. License
-
-Distributed under the MIT License. See `LICENSE` for details.
-
----
-
-## 12. Contact
-
-For help or questions, open an issue.
-
----
-
-**Happy Machine Learning!**
+This concise README is ready to help anyone deploy your ML app on AWS EC2 with `application.py` as the Flask entrypoint.
